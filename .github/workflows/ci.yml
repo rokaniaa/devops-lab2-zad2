@@ -22,31 +22,25 @@ jobs:
         java-version: [17, 21]
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      steps:
+        - name: Checkout repo
+          uses: actions/checkout@v4
 
-      - name: Set up Java ${{ matrix.java-version }}
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: ${{ matrix.java-version }}
-          cache: 'maven'
+        - name: Set up Java ${{ matrix.java-version }}
+          uses: actions/setup-java@v4
+          with:
+            distribution: 'temurin'
+            java-version: ${{ matrix.java-version }}
+            cache: 'maven'    # cache zależności Mavena
 
-      - name: Run tests
-        run: |
-          echo "Running my tests"
-          cd src/test/java
-          javac MyTests.java
-          java MyTests
+        - name: Run tests (Maven + JUnit 5)
+          run: mvn -B test
 
-      - name: Build application
-        run: |
-          mkdir -p build
-          echo "Building app"
-          echo "sample build artifact for Java ${{ matrix.java-version }}" > build/artifact.txt
+        - name: Build application (package)
+          run: mvn -B -DskipTests package
 
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-${{ matrix.java-version }}
-          path: build/
+        - name: Upload build artifact
+          uses: actions/upload-artifact@v4
+          with:
+            name: build-${{ matrix.java-version }}
+            path: target/*.jar
