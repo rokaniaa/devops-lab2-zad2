@@ -34,15 +34,15 @@ jobs:
 
       - name: Run tests
         run: |
-          echo "Running dummy tests..."
-          echo 'class DummyTest { public static void main(String[] args){ assert true; } }' > MyTests.java
+          echo "Running my tests"
+          cd src/test/java
           javac MyTests.java
           java MyTests
 
       - name: Build application
         run: |
           mkdir -p build
-          echo "Building app..."
+          echo "Building app"
           echo "sample build artifact for Java ${{ matrix.java-version }}" > build/artifact.txt
 
       - name: Upload build artifact
