@@ -8,5 +8,4 @@ public class MyTests {
     void sampleTest() {
         assertEquals(2, 1 + 1);
     }
-
 }
