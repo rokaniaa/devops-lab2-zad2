@@ -50,3 +50,17 @@ jobs:
         with:
           name: build-${{ matrix.java-version }}
           path: target/*.jar
+
+      - name: Notify Discord on failure
+        if: ${{ failure() }}
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+        run: |
+          MSG="CI failed in ${{ github.repository }} (Java ${{ matrix.java-version }})
+          Workflow: ${{ github.workflow }}
+          Branch: ${{ github.ref_name }}
+          Commit: ${{ github.sha }}
+          Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          curl -sS -X POST -H 'Content-Type: application/json' \
+            -d "$(printf '{"content":"%s"}' "$(echo "$MSG" | sed 's/"/\\"/g')")" \
+            "$WEBHOOK_URL"
